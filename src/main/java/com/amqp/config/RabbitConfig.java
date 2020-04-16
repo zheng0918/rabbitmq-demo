@@ -81,7 +81,7 @@ public class RabbitConfig {
     /**创建普通队列**/
     @Bean
     public Queue getNormalQueue(){
-        Map<String,Object> args = new HashMap(2);
+        Map<String,Object> args = new HashMap<>(2);
         //当消息发送异常的时候，消息需要路由到的交换机和routing-key，这里配的直接是发送至死信队列
         args.put("x-dead-letter-exchange",X_DEAD_LETTER_EXCHANGE);
         args.put("x-dead-letter-routing-key",X_DEAD_LETTER_ROUTING_KEY);

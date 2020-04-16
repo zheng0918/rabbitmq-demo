@@ -48,11 +48,10 @@ public class DirectExchangeAndBindingConfiguration {
     public Queue mailQueue(){
         Map<String,Object> args = new HashMap<>(2);
         //设置死信交换机
-        args.put("x-dead-letter-exchange","dead_letter_exchange");
+        args.put(RabbitConfig.X_DEAD_LETTER_EXCHANGE,"dead_letter_exchange");
         //设置死信routingKey
-        args.put("x-dead-letter-exchange","mail_queue_fail");
-        Queue queue = new Queue("mailQueue",true,false,false,args);
-        return queue;
+        args.put(RabbitConfig.X_DEAD_LETTER_ROUTING_KEY,"mail_queue_fail");
+        return new Queue("mailQueue",true,false,false,args);
     }
 
     /**创建业务交换机**/
@@ -70,8 +69,7 @@ public class DirectExchangeAndBindingConfiguration {
     /***创建死信队列*/
     @Bean
     public Queue deadQueue(){
-        Queue queue = new Queue("dead",true);
-        return queue;
+        return new Queue("dead",true);
     }
 
     @Bean

@@ -1,11 +1,13 @@
 package com.amqp.constructor;
 
+import java.io.Serializable;
+
 /**
  * @annotation:
  * @author: Zhengx
  * @create: 2019-05-14 15:26
  */
-public class User {
+public class User implements Serializable {
 
     private final String userName;
     private final String password;

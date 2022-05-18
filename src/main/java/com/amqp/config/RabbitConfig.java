@@ -61,21 +61,12 @@ public class RabbitConfig {
     }
 
     /**
-     * 创建死信队列
+     * 创建死信队列,只需要一个交换机即可，两个队列绑定到上面
+     * 此处应该监听队列名为dead-queue的死信队列而不是普通队列normal-queue
      */
     @Bean
     public Queue getDeadQueue(){
         return new Queue(DEAD_QUEUE);
-    }
-    /**创建死信交换机**/
-    @Bean
-    public Exchange getDeadExchange(){
-        return ExchangeBuilder.directExchange(X_DEAD_LETTER_EXCHANGE).durable(true).build();
-    }
-    /**队列与延时交换机进行绑定**/
-    @Bean
-    public Binding bindDead(){
-        return BindingBuilder.bind(getDeadQueue()).to(getDeadExchange()).with(X_DEAD_LETTER_ROUTING_KEY).noargs();
     }
 
     /**创建普通队列**/
@@ -89,16 +80,22 @@ public class RabbitConfig {
         return QueueBuilder.durable(NORMAL_QUEUE).withArguments(args).build();
     }
 
-    /**创建普通交换机**/
+    /**创建死信交换机**/
     @Bean
-    public Exchange getNormalExchange(){
-        return ExchangeBuilder.directExchange(NORMAL_EXCHANGE).durable(true).build();
+    public Exchange getDeadExchange(){
+        return ExchangeBuilder.directExchange(X_DEAD_LETTER_EXCHANGE).durable(true).build();
+    }
+
+    /**队列与延时交换机进行绑定**/
+    @Bean
+    public Binding bindDead(){
+        return BindingBuilder.bind(getDeadQueue()).to(getDeadExchange()).with(X_DEAD_LETTER_ROUTING_KEY).noargs();
     }
 
     /**普通队列与普通交换机进行绑定**/
     @Bean
     public Binding bindNormal(){
-        return BindingBuilder.bind(getNormalQueue()).to(getNormalExchange()).with(NORMAL_ROUTING_KEY).noargs();
+        return BindingBuilder.bind(getNormalQueue()).to(getDeadExchange()).with(NORMAL_ROUTING_KEY).noargs();
     }
 }
 
